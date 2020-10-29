@@ -1,6 +1,7 @@
 from rpckit.codec import JsonCodec
 from rpckit.function import Function
 from rpckit.transport import HttpTransport
+from rpckit.auth import TransientJwtAuthorizationTicketHolder
 
 
 def provide_function_url(f):
@@ -9,9 +10,14 @@ def provide_function_url(f):
 
 class RpcConfig:
 
-    def __init__(self, codec=JsonCodec(), transport=HttpTransport(), url_provider=provide_function_url):
+    def __init__(self,
+                 codec=JsonCodec(),
+                 transport=HttpTransport(),
+                 auth_ticket_holder=TransientJwtAuthorizationTicketHolder(),
+                 url_provider=provide_function_url):
         self.codec = codec
         self.transport = transport
+        self.auth_ticket_holder = auth_ticket_holder
         self.url_provider = url_provider
 
 
