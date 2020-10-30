@@ -5,9 +5,6 @@ from rpckit.decorators import rpc_function
 from rpckit.decorators import RpcFunction
 
 
-RpcFunction.default_server_url = "http://testrpc.cadmean.ru"
-
-
 @rpc_function("http://testrpc.cadmean.ru", "sum")
 def add_int(a, b):
     print(f"Calling rpc function that adds {a}+{b}")
