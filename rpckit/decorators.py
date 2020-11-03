@@ -1,5 +1,6 @@
 from rpckit.rpc import RpcClient
 from rpckit.exceptions import RpcException
+from rpckit.constants import RpcErrorCode
 
 
 class RpcFunction:
@@ -27,7 +28,7 @@ class RpcFunction:
         if RpcFunction.default_server_url is not None:
             return RpcFunction.default_server_url
 
-        raise RpcException(7, "No server url specified")
+        raise RpcException(RpcErrorCode.PreCallChecksFailed, "No server url specified")
 
     @staticmethod
     def _get_rpc(server_url):

@@ -1,5 +1,6 @@
 from rpckit.exceptions import FunctionException
 from rpckit.auth import JwtAuthorizationTicket
+from rpckit.constants import RpcDataType
 
 
 class FunctionCall:
@@ -23,14 +24,20 @@ class Function:
 
     async def call(self, *args):
         c = FunctionCall(*args, auth=self._authorize_call_if_possible())
+
         data = self.rpc.config.codec.encode(c.__dict__)
         url = self.rpc.config.url_provider(self)
         ct = self.rpc.config.codec.content_type
+
         r = await self.rpc.config.transport.send(f"{self.rpc.server_url}/{url}", data, ct)
+
         output = FunctionOutput(**self.rpc.config.codec.decode(r))
+
         if output.error != 0:
             raise FunctionException(output.error)
+
         self._process_meta_data(output)
+
         return output.result
 
     def _authorize_call_if_possible(self):
@@ -44,7 +51,7 @@ class Function:
         if meta is None:
             return
 
-        if "clrResultType" in meta:
-            result_type = meta["clrResultType"]
-            if result_type == "Cadmean.RPC.JwtAuthorizationTicket":
+        if "resultType" in meta:
+            result_type = meta["resultType"]
+            if result_type == RpcDataType.Auth:
                 self.rpc.config.auth_ticket_holder.set_ticket(JwtAuthorizationTicket(**output.result))
