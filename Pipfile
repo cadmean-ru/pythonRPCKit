@@ -6,9 +6,10 @@ verify_ssl = true
 [dev-packages]
 python-dateutil = "*"
 aiounittest = "*"
+pytest = "*"
 
 [packages]
 aiohttp = "*"
 
 [requires]
-python_version = "3.9"
+python_version = "3.8"
