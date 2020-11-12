@@ -9,16 +9,31 @@ class RpcFunction:
 
     _rpc_cache = {}
 
-    def __init__(self, function_name, server_url=None):
+    def __init__(self, function_name, server_url=None, async_call=False):
         self.server_url = server_url
         self.function_name = function_name
+        self.async_call = async_call
 
     def __call__(self, fn):
+        if self.async_call:
+            return self._get_async_wrapper(fn)
+        else:
+            return self._get_wrapper(fn)
+
+    def _get_wrapper(self, fn):
+        def wrapper(*args, **kwargs):
+            u = self._get_url()
+            rpc = RpcFunction._get_rpc(u)
+            fn(*args, **kwargs)
+            return rpc.f(self.function_name).call(*args)
+        return wrapper
+
+    def _get_async_wrapper(self, fn):
         async def wrapper(*args, **kwargs):
             u = self._get_url()
             rpc = RpcFunction._get_rpc(u)
             fn(*args, **kwargs)
-            return await rpc.f(self.function_name).call(*args)
+            return await rpc.f(self.function_name).call_async(*args)
         return wrapper
 
     def _get_url(self):
@@ -42,13 +57,3 @@ class RpcFunction:
     @staticmethod
     def clear_cache():
         RpcFunction._rpc_cache = {}
-
-
-def rpc_function(server_url, function_name):
-    def decorator(fn):
-        async def wrapper(*args, **kwargs):
-            rpc = RpcClient(server_url)
-            fn(*args, **kwargs)
-            return await rpc.f(function_name).call(*args)
-        return wrapper
-    return decorator

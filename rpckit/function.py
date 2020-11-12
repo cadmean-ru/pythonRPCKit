@@ -22,7 +22,7 @@ class Function:
         self.name = name
         self.rpc = rpc
 
-    async def call(self, *args):
+    async def call_async(self, *args):
         c = FunctionCall(*args, auth=self._authorize_call_if_possible())
 
         data = self.rpc.config.codec.encode(c.__dict__)
@@ -31,7 +31,21 @@ class Function:
 
         r = await self.rpc.config.transport.send(f"{self.rpc.server_url}/{url}", data, ct)
 
-        output = FunctionOutput(**self.rpc.config.codec.decode(r))
+        return self._get_result(r)
+
+    def call(self, *args):
+        c = FunctionCall(*args, auth=self._authorize_call_if_possible())
+
+        data = self.rpc.config.codec.encode(c.__dict__)
+        url = self.rpc.config.url_provider(self)
+        ct = self.rpc.config.codec.content_type
+
+        r = self.rpc.config.transport.send_sync(f"{self.rpc.server_url}/{url}", data, ct)
+
+        return self._get_result(r)
+
+    def _get_result(self, response_data):
+        output = FunctionOutput(**self.rpc.config.codec.decode(response_data))
 
         if output.error != 0:
             raise FunctionException(output.error)
