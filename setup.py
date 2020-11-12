@@ -4,8 +4,8 @@ with open("README.md", "r") as readme:
     long_description = readme.read()
 
 setuptools.setup(
-    name="cadrpc",
-    version="0.1",
+    name="cadmean-rpckit",
+    version="0.2",
     author="Aleksei Kritskov",
     author_email="krickov.aleksey@cadmean.ru",
     description="A cadRPC client library for Python",
