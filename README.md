@@ -63,6 +63,9 @@ You can add ```async_call=True``` to the decorator, than
 function call will be asynchronous, and you 
 will be able to use your function with ```async/await```.
 
+In the above examples we are calling the "sum" function at testrpc.cadmean.ru, 
+that takes two integers and returns an integer.
+
 ## Error handling
 
 cadRPC function may return an error code instead of a result. 
