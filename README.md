@@ -136,3 +136,4 @@ Feel free to submit issues or create pull requests following fork-and-pull git w
 * [C# client and server library](https://github.com/cadmean-ru/csharpRPCKit)
 * [Android client library](https://github.com/cadmean-ru/androidRPCKit)
 * [Example server](https://github.com/cadmean-ru/ExampleRpcServer)
+* [Dart client library](https://github.com/cadmean-ru/cadmean_rpc_dart)
